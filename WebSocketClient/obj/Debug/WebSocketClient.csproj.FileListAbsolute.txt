@@ -1,0 +1,15 @@
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\bin\Debug\WebSocketClient.exe.config
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\bin\Debug\WebSocketClient.exe
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\bin\Debug\WebSocketClient.pdb
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\obj\Debug\WebSocketClient.csproj.AssemblyReference.cache
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\obj\Debug\MainWindow.g.cs
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\obj\Debug\App.g.cs
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\obj\Debug\WebSocketClient_MarkupCompile.cache
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\obj\Debug\WebSocketClient_MarkupCompile.lref
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\obj\Debug\MainWindow.baml
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\obj\Debug\WebSocketClient.g.resources
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\obj\Debug\WebSocketClient.Properties.Resources.resources
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\obj\Debug\WebSocketClient.csproj.GenerateResource.cache
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\obj\Debug\WebSocketClient.csproj.CoreCompileInputs.cache
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\obj\Debug\WebSocketClient.exe
+D:\Chimingkuei\repos\WebSocket\WebSocketClient\obj\Debug\WebSocketClient.pdb

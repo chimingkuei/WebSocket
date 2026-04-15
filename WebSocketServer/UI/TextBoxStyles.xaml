@@ -1,0 +1,53 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- 關閉ToolTip(ToolTipService.IsEnabled="False") -->
+    <Style x:Key="BaseTextBox" TargetType="{x:Type TextBox}">
+        <!-- ToolTip 設定 -->
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip Background="Transparent" BorderThickness="0">
+                    <TextBlock Text="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource AncestorType=ToolTip}}"
+                    Foreground="Green"
+                    FontWeight="Bold"
+                    FontSize="18"
+                    FontFamily="Segoe UI"/>
+                </ToolTip>
+            </Setter.Value>
+        </Setter>
+        <!-- TextBox 模板 -->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border Background="{TemplateBinding Background}"
+                 BorderBrush="{TemplateBinding BorderBrush}"
+                 BorderThickness="{TemplateBinding BorderThickness}"
+                 CornerRadius="10">
+                        <Grid>
+                            <!-- 中心顯示文本 -->
+                            <ScrollViewer x:Name="PART_ContentHost" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <!-- 浮水印 -->
+                            <TextBlock x:Name="WatermarkText"
+                            Text="{TemplateBinding Tag}"
+                            Foreground="Green"
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left"
+                            Visibility="Collapsed"/>
+                        </Grid>
+                    </Border>
+                    <!-- 觸發器 -->
+                    <ControlTemplate.Triggers>
+                        <!-- 空文字時顯示浮水印 -->
+                        <Trigger Property="Text" Value="">
+                            <Setter TargetName="WatermarkText" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <!-- 獲得焦點時隱藏浮水印 -->
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="WatermarkText" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
