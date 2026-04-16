@@ -225,23 +225,32 @@ namespace WebSocketClient
             {
                 case nameof(Link):
                     {
-                        await client.ConnectToServerAsync("ws://192.168.1.10:8500/"); // 192.168.1.10
-                        while (true) // 或者使用一個布林變數控制開關
+                        await client.ConnectToServerAsync("ws://127.0.0.1:8500/"); // 192.168.1.10
+                        Random rng = new Random();
+                        while (true)
                         {
                             try
                             {
                                 // 設定 5 秒超時的 Token
                                 using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
                                 {
-                                    // 1. 等待接收指令
                                     string reply = await client.ReceiveMessageAsync(cts.Token);
                                     if (reply != null)
                                     {
                                         Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] 接收到指令：{reply}");
                                         Console.WriteLine("開始雷射掃描...");
-                                        // 這裡建議也要傳入 cts.Token 或是處理取消邏輯
                                         await Task.Delay(5000);
-                                        await client.SendMessageAsync("檢測結果︰OK");
+                                        int dice = rng.Next(0, 100);
+                                        if (dice < 70)
+                                        {
+                                            Console.WriteLine("OK");
+                                            await client.SendMessageAsync("檢測結果︰OK");
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("NG");
+                                            await client.SendMessageAsync("檢測結果︰NG");
+                                        }
                                     }
                                     else
                                     {
@@ -262,7 +271,6 @@ namespace WebSocketClient
                                 await Task.Delay(2000); // 發生錯誤後稍作停頓再重試
                             }
                         }
-                        break;
                     }
             }
         }
