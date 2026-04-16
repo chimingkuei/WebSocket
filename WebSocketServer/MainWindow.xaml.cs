@@ -225,9 +225,9 @@ namespace WebSocketServer
         {
             switch ((sender as System.Windows.Controls.Button).Name)
             {
-                case nameof(Demo):
+                case nameof(Listen):
                     {
-                        await server.StartAsync("http://127.0.0.1:8500/");
+                        await server.StartAsync("http://192.168.1.10:8500/"); // 192.168.1.10
                         break;
                     }
             }

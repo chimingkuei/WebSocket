@@ -49,7 +49,7 @@
         <TabControl Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Height="491" Width="992" Background="#FFE6F0FF">
             <TabItem Header="主畫面" Style="{StaticResource BaseTabcontrol}">
                 <Grid>
-                    <Button x:Name="Demo" Style="{StaticResource CircleButton}" Margin="801,69,71,277" Content="Demo" FontSize="18" Height="100" Width="100" Click="Main_Btn_Click"/>
+                    <Button x:Name="Listen" Style="{StaticResource CircleButton}" Margin="801,69,71,277" Content="Listen" FontSize="18" Height="100" Width="100" Click="Main_Btn_Click"/>
                     <TextBox x:Name="Parameter1" Style="{StaticResource BaseTextBox}" Tag="請輸入內容..." Margin="806,203,67,216"/>
                     <TextBox x:Name="Parameter2" Style="{StaticResource BaseTextBox}" Tag="請輸入內容..." Margin="806,277,67,143"/>
                     <WindowsFormsHost  Margin="16,18,234,15">

@@ -223,17 +223,44 @@ namespace WebSocketClient
         {
             switch ((sender as System.Windows.Controls.Button).Name)
             {
-                case nameof(Demo):
+                case nameof(Link):
                     {
-                        await client.ConnectToServerAsync("ws://127.0.0.1:8500/");
-                        await client.SendMessageAsync("測試");
-                        using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
+                        await client.ConnectToServerAsync("ws://192.168.1.10:8500/"); // 192.168.1.10
+                        while (true) // 或者使用一個布林變數控制開關
                         {
-                            string reply = await client.ReceiveMessageAsync(cts.Token);
-                            if (reply != null)
-                                Console.WriteLine("成功拿到資料: " + reply);
-                            else
-                                Console.WriteLine("Server 未回傳資料或已斷開。");
+                            try
+                            {
+                                // 設定 5 秒超時的 Token
+                                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
+                                {
+                                    // 1. 等待接收指令
+                                    string reply = await client.ReceiveMessageAsync(cts.Token);
+                                    if (reply != null)
+                                    {
+                                        Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] 接收到指令：{reply}");
+                                        Console.WriteLine("開始雷射掃描...");
+                                        // 這裡建議也要傳入 cts.Token 或是處理取消邏輯
+                                        await Task.Delay(5000);
+                                        await client.SendMessageAsync("檢測結果︰OK");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Server 未回傳資料或已斷開，1秒後重試...");
+                                        await Task.Delay(1000); // 避免無回應時過度消耗 CPU
+                                    }
+                                }
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                // 這是超時（5秒沒收到東西）會觸發的異常
+                                Console.WriteLine("接收超時，正在重新等待...");
+                            }
+                            catch (Exception ex)
+                            {
+                                // 處理連線中斷或其他意外錯誤
+                                Console.WriteLine($"發生錯誤: {ex.Message}");
+                                await Task.Delay(2000); // 發生錯誤後稍作停頓再重試
+                            }
                         }
                         break;
                     }

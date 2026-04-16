@@ -87,18 +87,11 @@ namespace WebSocketServer
             {
                 while (ws.State == WebSocketState.Open)
                 {
-                    // 1.呼叫「接收方法」
+                    await Task.Delay(2000);
+                    await SendAsync(ws, "Tray IC放置完成，請雷射掃描!");
+                    Console.WriteLine("告知Client雷射掃描!");
                     string receivedMessage = await ReceiveAsync(ws);
-                    if (receivedMessage != null)
-                    {
-                        Console.WriteLine($"[收到訊息]: {receivedMessage}");
-                        // 2.呼叫「回傳方法」
-                        await SendAsync(ws, "Server OK: " + receivedMessage);
-                    }
-                    else if (ws.State != WebSocketState.Open)
-                    {
-                        break;
-                    }
+                    Console.WriteLine($"[收到訊息]: {receivedMessage}");
                 }
             }
             catch (Exception ex)
