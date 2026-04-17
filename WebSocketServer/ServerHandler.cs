@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace WebSocketServer
 {
@@ -13,7 +14,6 @@ namespace WebSocketServer
     {
         private HttpListener _listener;
 
-        //啟動伺服器連線監聽
         public async Task StartAsync(string prefix)
         {
             _listener = new HttpListener();
@@ -44,6 +44,7 @@ namespace WebSocketServer
             }
         }
 
+        #region For String
         // 1.接收
         public async Task<string> ReceiveAsync(WebSocket ws)
         {
@@ -77,6 +78,38 @@ namespace WebSocketServer
                 CancellationToken.None
             );
         }
+        #endregion
+
+        #region for file
+        public async Task ReceiveFile(WebSocket ws, string filepath)
+        {
+            // 確保目錄存在
+            string dir = Path.GetDirectoryName(filepath);
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+            using (var fs = new FileStream(filepath, FileMode.Create, FileAccess.Write))
+            {
+                var buffer = new byte[1024 * 64];
+                WebSocketReceiveResult result;
+
+                do
+                {
+                    result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+                    if (result.MessageType == WebSocketMessageType.Close) return;
+
+                    if (result.MessageType == WebSocketMessageType.Binary)
+                    {
+                        await fs.WriteAsync(buffer, 0, result.Count);
+                    }
+
+                    // 只要 EndOfMessage 為 false，就表示這個檔案還沒傳完
+                } while (!result.EndOfMessage);
+            }
+
+            Console.WriteLine($"檔案 {filepath} 接收完成。");
+        }
+        #endregion
 
         private async Task HandleClientAsync(HttpListenerContext context)
         {
@@ -91,7 +124,9 @@ namespace WebSocketServer
                     await SendAsync(ws, "Tray IC放置完成，請雷射掃描!");
                     Console.WriteLine("告知Client雷射掃描!");
                     string receivedMessage = await ReceiveAsync(ws);
-                    Console.WriteLine($"[收到訊息]: {receivedMessage}");
+                    Console.WriteLine($"[收到檢測訊息]: {receivedMessage}");
+                    await ReceiveFile(ws, @"D:\Chimingkuei\repos\WebSocket\Output\Test.json");
+                    Console.WriteLine($"[收到檢測檔案]: {receivedMessage}");
                 }
             }
             catch (Exception ex)

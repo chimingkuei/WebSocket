@@ -44,6 +44,7 @@ namespace WebSocketClient
             }
         }
 
+        #region For String
         public async Task SendMessageAsync(string message)
         {
             if (_client == null || _client.State != WebSocketState.Open)
@@ -107,6 +108,33 @@ namespace WebSocketClient
                 return null;
             }
         }
+        #endregion
+
+        #region for file
+        public async Task SendFileAsync(string filePath)
+        {
+            var fileInfo = new FileInfo(filePath);
+            byte[] buffer = new byte[1024 * 64]; // 64KB 的緩衝區
+
+            using (var fs = File.OpenRead(filePath))
+            {
+                int bytesRead;
+                while ((bytesRead = await fs.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                {
+                    // 檢查是否為最後一個分片
+                    bool endOfMessage = (fs.Position == fs.Length);
+
+                    await _client.SendAsync(
+                        new ArraySegment<byte>(buffer, 0, bytesRead),
+                        WebSocketMessageType.Binary, // 指定為二進位格式
+                        endOfMessage,
+                        CancellationToken.None
+                    );
+                }
+            }
+            Console.WriteLine("檔案上傳完成！");
+        }
+        #endregion
     }
 
 

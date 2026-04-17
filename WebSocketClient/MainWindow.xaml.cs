@@ -225,7 +225,7 @@ namespace WebSocketClient
             {
                 case nameof(Link):
                     {
-                        await client.ConnectToServerAsync("ws://127.0.0.1:8500/"); // 192.168.1.10
+                        await client.ConnectToServerAsync("ws://127.0.0.1:8500/"); // 192.168.1.10 // 127.0.0.1
                         Random rng = new Random();
                         while (true)
                         {
@@ -245,11 +245,13 @@ namespace WebSocketClient
                                         {
                                             Console.WriteLine("OK");
                                             await client.SendMessageAsync("檢測結果︰OK");
+                                            await client.SendFileAsync(@"D:\Chimingkuei\repos\WebSocket\Input\Config.json");
                                         }
                                         else
                                         {
                                             Console.WriteLine("NG");
                                             await client.SendMessageAsync("檢測結果︰NG");
+                                            await client.SendFileAsync(@"D:\Chimingkuei\repos\WebSocket\Input\Config.json");
                                         }
                                     }
                                     else

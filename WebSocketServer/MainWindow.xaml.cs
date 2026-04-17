@@ -227,7 +227,7 @@ namespace WebSocketServer
             {
                 case nameof(Listen):
                     {
-                        await server.StartAsync("http://127.0.0.1:8500/"); // 192.168.1.10
+                        await server.StartAsync("http://127.0.0.1:8500/"); // 192.168.1.10 // 127.0.0.1
                         break;
                     }
             }
