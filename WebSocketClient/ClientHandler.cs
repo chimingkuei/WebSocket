@@ -44,7 +44,7 @@ namespace WebSocketClient
             }
         }
 
-        #region For String
+        #region For send string
         public async Task SendMessageAsync(string message)
         {
             if (_client == null || _client.State != WebSocketState.Open)
@@ -110,7 +110,7 @@ namespace WebSocketClient
         }
         #endregion
 
-        #region for file
+        #region For send file
         public async Task SendFileAsync(string filePath)
         {
             var fileInfo = new FileInfo(filePath);
@@ -133,6 +133,40 @@ namespace WebSocketClient
                 }
             }
             Console.WriteLine("檔案上傳完成！");
+        }
+
+        public async Task ReceiveFileAsync(string savePath)
+        {
+            // 1. 開啟檔案準備寫入
+            using (var fs = new FileStream(savePath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                byte[] buffer = new byte[1024 * 64]; // 與 Server 相同的 64KB 緩衝區
+
+                while (_client.State == WebSocketState.Open)
+                {
+                    WebSocketReceiveResult result;
+
+                    // 2. 內部迴圈：處理「單一檔案」的所有分片
+                    do
+                    {
+                        result = await _client.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+                        if (result.MessageType == WebSocketMessageType.Close)
+                        {
+                            await _client.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
+                            return;
+                        }
+
+                        // 3. 接收多少就寫入多少
+                        await fs.WriteAsync(buffer, 0, result.Count);
+
+                    } while (!result.EndOfMessage); // 如果還沒收到 EndOfMessage，繼續收下一片
+
+                    // 4. 當 result.EndOfMessage 為 true，代表檔案接收完整
+                    Console.WriteLine("完整檔案接收完畢，已存檔。");
+                    break; // 跳出外部迴圈
+                }
+            }
         }
         #endregion
     }

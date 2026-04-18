@@ -44,7 +44,7 @@ namespace WebSocketServer
             }
         }
 
-        #region For String
+        #region For send string
         // 1.接收
         public async Task<string> ReceiveAsync(WebSocket ws)
         {
@@ -80,7 +80,34 @@ namespace WebSocketServer
         }
         #endregion
 
-        #region for file
+        #region For send file
+        public async Task SendFileAsync(WebSocket ws, string filePath)
+        {
+            if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
+
+            var fileInfo = new FileInfo(filePath);
+            byte[] buffer = new byte[1024 * 64]; // 64KB 緩衝
+
+            // 使用 OpenRead 並允許其他程式讀取，增加魯棒性
+            using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                int bytesRead;
+                while ((bytesRead = await fs.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                {
+                    // 更加精確的判定：是否已經讀取到檔案末尾
+                    bool isEndOfFile = (fs.Position == fs.Length);
+
+                    await ws.SendAsync(
+                        new ArraySegment<byte>(buffer, 0, bytesRead),
+                        WebSocketMessageType.Binary,
+                        isEndOfFile, // 告知接收端這是否為最後一塊
+                        CancellationToken.None
+                    );
+                }
+            }
+            Console.WriteLine($"檔案 {fileInfo.Name} 傳送完成！");
+        }
+
         public async Task ReceiveFile(WebSocket ws, string filepath)
         {
             // 確保目錄存在
@@ -125,8 +152,6 @@ namespace WebSocketServer
                     Console.WriteLine("告知Client雷射掃描!");
                     string receivedMessage = await ReceiveAsync(ws);
                     Console.WriteLine($"[收到檢測訊息]: {receivedMessage}");
-                    await ReceiveFile(ws, @"D:\Chimingkuei\repos\WebSocket\Output\Test.json");
-                    Console.WriteLine($"[收到檢測檔案]: {receivedMessage}");
                 }
             }
             catch (Exception ex)

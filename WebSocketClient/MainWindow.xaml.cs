@@ -240,19 +240,9 @@ namespace WebSocketClient
                                         Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] 接收到指令：{reply}");
                                         Console.WriteLine("開始雷射掃描...");
                                         await Task.Delay(5000);
-                                        int dice = rng.Next(0, 100);
-                                        if (dice < 70)
-                                        {
-                                            Console.WriteLine("OK");
-                                            await client.SendMessageAsync("檢測結果︰OK");
-                                            await client.SendFileAsync(@"D:\Chimingkuei\repos\WebSocket\Input\Config.json");
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine("NG");
-                                            await client.SendMessageAsync("檢測結果︰NG");
-                                            await client.SendFileAsync(@"D:\Chimingkuei\repos\WebSocket\Input\Config.json");
-                                        }
+                                        string status = (rng.Next(0, 100) < 70) ? "OK" : "NG";
+                                        Console.WriteLine(status);
+                                        await client.SendMessageAsync($"檢測結果︰{status}");
                                     }
                                     else
                                     {
